@@ -1,28 +1,16 @@
 # 自宅サーバー公開への道
+
 ## 実行環境
 
 | 名称 | ip |
-|------|------|
+|-|-|
 |ルーター|192.168.0.1|
 |メインpc|192.168.0.8|
 |サーバー|192.168.0.4|
 
-## ネットワーク内に公開する方法
-
-- ゲストOS上の `/var/www/html/`にhtmlを配置する。(デフォルト)
-- ネットワークアダプタをブリッジに変更
-
 ## ネットワーク外に公開する方法
-- ルーター(192.168.0.1)のDMZホスト設定をする
-
-## ポート番号変更方法
-- /etc/httpd/conf/の中のhttpd.confを編集
-  - `cd /etc/httpd/conf`
-  - `vi httpd.conf`
-
-## Apache起動
-- `systemctl start httpd`
-- `systemctl restart httpd`
+- ルーター(192.168.0.1)でDMZホスト設定をする
+  - 今回はブリッジアダプターを採用
 
 ## Linux システム 自動起動
 - 状態確認
@@ -42,13 +30,13 @@
 
 ## SSH接続
 - 設定フォルダ `/etc/ssh/sshd_config`
-### 設定内容
 - rootでのログインを禁止
   - `PermitRootLogin no`
 - ポート番号変更
   - `Port 29537`
+- firewallでsshを削除しポート29537を追加
  
-## エラー
+### エラー
 - SElinuxがONだとポート番号の変更を行うことができない
   - 状態確認:`getenforce`
   - オフ:`setenforce 0`
@@ -62,26 +50,33 @@
 - ファイル、フォルダの権限
   - `chmod [777] [ファイル名]`
 
-
-## ログ
-- エラーログの場所
-  - /var/log/httpd/access_log
-
-## MariDB
-
-- MariaDBのインストール
-  - `yum -y install mariadb mariadb-server`
-- 初期設定
-  - `mysql_secure_installation`
-- ログイン
-  - `mysql -u root -p`
-
 ## PHP
 
 - phpのインストール
   - `yum -y install php php-mbstring php-mysqli`
 - PHP設定ファイル
   - /etc/php.ini
+
+# Apache
+
+## ネットワーク内に公開する方法
+
+- ゲストOS上の `/var/www/html/`にhtmlを配置する。(デフォルト)
+- ネットワークアダプタをブリッジに変更
+
+## ポート番号変更方法
+- /etc/httpd/conf/の中のhttpd.confを編集
+  - `cd /etc/httpd/conf`
+  - `vi httpd.conf`
+
+## Apache起動
+- `systemctl start httpd`
+- `systemctl restart httpd`
+
+## ログ
+- エラーログの場所
+  - /var/log/httpd/access_log
+
 
 # 参考
 
@@ -99,6 +94,3 @@
 
 ## httpd
 - https://www.linuxacademy.ne.jp/lablog/infrastructure/532/
-
-
-a
